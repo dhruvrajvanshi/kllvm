@@ -1,5 +1,6 @@
 package dev.supergrecko.kllvm.core
 
+import dev.supergrecko.kllvm.core.enumerations.LLVMOpcode
 import dev.supergrecko.kllvm.core.enumerations.LLVMValueKind
 import dev.supergrecko.kllvm.utils.toBoolean
 import org.bytedeco.llvm.LLVM.LLVMValueRef
@@ -44,6 +45,9 @@ public class LLVMValue internal constructor(
     //endregion Core::Values::Constants::CompositeConstants
 
     //region Core::Values::Constants::ConstantExpressions
+    public fun getConstOpcode(): LLVMOpcode {
+        TODO()
+    }
     //endregion Core::Values::Constants::ConstantExpressions
 
     //region Core::Values::Constants::GlobalValues
