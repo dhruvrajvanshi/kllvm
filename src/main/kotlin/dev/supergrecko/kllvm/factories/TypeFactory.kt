@@ -9,7 +9,6 @@ import dev.supergrecko.kllvm.core.typebuilders.VectorBuilder
 import dev.supergrecko.kllvm.utils.toInt
 import org.bytedeco.javacpp.PointerPointer
 import org.bytedeco.llvm.global.LLVM
-import java.lang.IllegalArgumentException
 
 /**
  * A factory for producing [LLVMType] instances
@@ -175,6 +174,7 @@ public object TypeFactory : Factory<LLVMType> {
 
         return LLVMType(ty, LLVMTypeKind.Metadata)
     }
+
     public fun x86mmx(ctx: LLVMContext = LLVMContext.getGlobalContext()): LLVMType {
         val ty = LLVM.LLVMX86MMXTypeInContext(ctx.llvmCtx)
 

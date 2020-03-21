@@ -13,7 +13,6 @@ import org.bytedeco.llvm.global.LLVM
 
 public object ConstantFactory : Factory<LLVMValue> {
     //region Core::Values::Constants
-
     @RejectsType(LLVMTypeKind.Function, LLVMTypeKind.Label)
     public fun constNull(type: LLVMType): LLVMValue {
         require(!type.isInTypeKinds(LLVMTypeKind.Function, LLVMTypeKind.Label))
@@ -47,28 +46,55 @@ public object ConstantFactory : Factory<LLVMValue> {
 
         return LLVMValue(ptr)
     }
-
     //endregion Core::Values::Constants
+
     //region Core::Values::Constants::ScalarConstants
+    public fun constInt(type: LLVMType, value: Long, signExtend: Boolean): LLVMValue {
+        TODO()
+    }
 
-    public fun constInt(type: LLVMType, value: Long, signExtend: Boolean): LLVMValue { TODO() }
-    public fun constIntOfAP(type: LLVMType, words: List<Long>): LLVMValue { TODO() }
-    public fun constIntOfString(type: LLVMType, text: String, radix: Radix): LLVMValue { TODO() }
+    public fun constIntOfAP(type: LLVMType, words: List<Long>): LLVMValue {
+        TODO()
+    }
 
-    public fun constReal(type: LLVMType, value: Long): LLVMValue { TODO() }
-    public fun constRealOfString(type: LLVMType, text: String): LLVMValue { TODO() }
+    public fun constIntOfString(type: LLVMType, text: String, radix: Radix): LLVMValue {
+        TODO()
+    }
 
+    public fun constReal(type: LLVMType, value: Long): LLVMValue {
+        TODO()
+    }
+
+    public fun constRealOfString(type: LLVMType, text: String): LLVMValue {
+        TODO()
+    }
     //endregion Core::Values::Constants::ScalarConstants
+
     //region Core::Values::Constants::CompositeConstants
+    public fun constString(text: String, nullTerminate: Boolean, context: LLVMContext = LLVMContext.getGlobalContext()): LLVMValue {
+        TODO()
+    }
 
-    public fun constString(text: String, nullTerminate: Boolean, context: LLVMContext = LLVMContext.getGlobalContext()): LLVMValue { TODO() }
-    public fun constStruct(values: List<LLVMValue>, packed: Boolean, context: LLVMContext = LLVMContext.getGlobalContext()): LLVMValue { TODO() }
-    public fun constArray(type: LLVMType, values: List<LLVMValue>): LLVMValue { TODO() }
-    public fun constNamedStruct(type: LLVMType, values: List<LLVMValue>): LLVMValue { TODO() }
-    public fun constVector(values: LLVMValueRef): LLVMValue { TODO() }
+    public fun constStruct(values: List<LLVMValue>, packed: Boolean, context: LLVMContext = LLVMContext.getGlobalContext()): LLVMValue {
+        TODO()
+    }
 
+    public fun constArray(type: LLVMType, values: List<LLVMValue>): LLVMValue {
+        TODO()
+    }
+
+    public fun constNamedStruct(type: LLVMType, values: List<LLVMValue>): LLVMValue {
+        TODO()
+    }
+
+    public fun constVector(values: LLVMValueRef): LLVMValue {
+        TODO()
+    }
     //endregion Core::Values::Constants::CompositeConstants
-    //region Core::Values::Constants::ConstantExpressions
 
+    //region Core::Values::Constants::ConstantExpressions
     //endregion Core::Values::Constants::ConstantExpressions
+
+    //region Core::Values::Constants::GlobalValues
+    //endregion Core::Values::Constants::GlobalValues
 }

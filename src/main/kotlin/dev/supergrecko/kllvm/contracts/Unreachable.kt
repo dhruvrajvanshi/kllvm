@@ -1,7 +1,5 @@
 package dev.supergrecko.kllvm.contracts
 
-import java.lang.RuntimeException
-
 /**
  * Indicates that a code block is unreachable
  *
