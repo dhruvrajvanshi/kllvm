@@ -1,6 +1,5 @@
 package dev.supergrecko.kllvm.core
 
-import dev.supergrecko.kllvm.annotation.ExpectsType
 import dev.supergrecko.kllvm.contracts.Unreachable
 import dev.supergrecko.kllvm.core.enumerations.LLVMTypeKind
 import dev.supergrecko.kllvm.core.message.Message
@@ -63,7 +62,6 @@ public open class LLVMType internal constructor(
     /**
      * Accepts [LLVMTypeKind.Struct]
      */
-    @ExpectsType(LLVMTypeKind.Struct)
     public fun isStructPacked(): Boolean {
         require(isTypeKind(LLVMTypeKind.Struct))
 
@@ -73,7 +71,6 @@ public open class LLVMType internal constructor(
     /**
      * Accepts [LLVMTypeKind.Struct]
      */
-    @ExpectsType(LLVMTypeKind.Struct)
     public fun isStructOpaque(): Boolean {
         require(isTypeKind(LLVMTypeKind.Struct))
 
@@ -83,7 +80,6 @@ public open class LLVMType internal constructor(
     /**
      * Accepts [LLVMTypeKind.Struct]
      */
-    @ExpectsType(LLVMTypeKind.Struct)
     public fun isStructLiteral(): Boolean {
         require(isTypeKind(LLVMTypeKind.Struct))
 
@@ -95,7 +91,6 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Struct]
      */
-    @ExpectsType(LLVMTypeKind.Struct)
     public fun setStructBody(elementTypes: List<LLVMType>, packed: Boolean) {
         require(isTypeKind(LLVMTypeKind.Struct))
         require(isStructOpaque())
@@ -112,10 +107,9 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Struct]
      */
-    @ExpectsType(LLVMTypeKind.Struct)
     public fun getStructElementTypeAt(index: Int): LLVMType {
         require(isTypeKind(LLVMTypeKind.Struct))
-        require(index <= getSequentialElementSize()) { "Requested index $index is out of bounds for this struct" }
+        require(index <= getStructElementCount()) { "Requested index $index is out of bounds for this struct" }
 
         val type = LLVM.LLVMStructGetTypeAtIndex(llvmType, index)
 
@@ -127,7 +121,6 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Struct]
      */
-    @ExpectsType(LLVMTypeKind.Struct)
     public fun getStructName(): String? {
         require(isTypeKind(LLVMTypeKind.Struct))
 
@@ -146,14 +139,20 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Struct]
      */
-    @ExpectsType(LLVMTypeKind.Struct)
     public fun getStructElementTypes(): List<LLVMType> {
         require(isTypeKind(LLVMTypeKind.Struct))
 
-        val dest = PointerPointer<LLVMTypeRef>(getSequentialElementSize().toLong())
+        val dest = PointerPointer<LLVMTypeRef>(getStructElementCount().toLong())
         LLVM.LLVMGetStructElementTypes(llvmType, dest)
 
         return dest.iterateIntoType { LLVMType(it, getTypeKind(it)) }
+    }
+
+    /**
+     * Get the amount of elements for this struct
+     */
+    public fun getStructElementCount(): Int {
+        return LLVM.LLVMCountStructElementTypes(llvmType)
     }
 
     //endregion Core::Types::StructureTypes
@@ -164,7 +163,6 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Pointer]
      */
-    @ExpectsType(LLVMTypeKind.Pointer)
     public fun getPointerAddressSpace(): Int {
         require(isTypeKind(LLVMTypeKind.Pointer))
 
@@ -176,7 +174,6 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Integer]
      */
-    @ExpectsType(LLVMTypeKind.Integer)
     public fun getIntegerTypeWidth(): Int {
         require(isTypeKind(LLVMTypeKind.Integer))
 
@@ -189,17 +186,14 @@ public open class LLVMType internal constructor(
      * Accepts [LLVMTypeKind.Array]: Allocated array size
      * Accepts [LLVMTypeKind.Vector]: Vector size
      * Accepts [LLVMTypeKind.Pointer]: Number of derived types
-     * Accepts [LLVMTypeKind.Struct]: Number of elements in struct body
      */
-    @ExpectsType(LLVMTypeKind.Array, LLVMTypeKind.Vector, LLVMTypeKind.Pointer, LLVMTypeKind.Struct)
     public fun getSequentialElementSize(): Int {
-        require(isInTypeKinds(LLVMTypeKind.Array, LLVMTypeKind.Vector, LLVMTypeKind.Pointer, LLVMTypeKind.Struct))
+        require(isInTypeKinds(LLVMTypeKind.Array, LLVMTypeKind.Vector, LLVMTypeKind.Pointer))
 
         return when (kind) {
             LLVMTypeKind.Array -> LLVM.LLVMGetArrayLength(llvmType)
             LLVMTypeKind.Vector -> LLVM.LLVMGetVectorSize(llvmType)
             LLVMTypeKind.Pointer -> LLVM.LLVMGetNumContainedTypes(llvmType)
-            LLVMTypeKind.Struct -> LLVM.LLVMCountStructElementTypes(llvmType)
             else -> throw Unreachable()
         }
     }
@@ -213,7 +207,6 @@ public open class LLVMType internal constructor(
      *
      * TODO: Learn how to test this
      */
-    @ExpectsType(LLVMTypeKind.Array, LLVMTypeKind.Pointer, LLVMTypeKind.Vector)
     public fun getSequentialSubtypes(): List<LLVMType> {
         require(isInTypeKinds(LLVMTypeKind.Array, LLVMTypeKind.Pointer, LLVMTypeKind.Vector))
 
@@ -230,7 +223,6 @@ public open class LLVMType internal constructor(
      * Accepts [LLVMTypeKind.Pointer]
      * Accepts [LLVMTypeKind.Vector]
      */
-    @ExpectsType(LLVMTypeKind.Array, LLVMTypeKind.Pointer, LLVMTypeKind.Vector)
     public fun getSequentialElementType(): LLVMType {
         require(isInTypeKinds(LLVMTypeKind.Array, LLVMTypeKind.Pointer, LLVMTypeKind.Vector))
 
@@ -247,7 +239,6 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Function]
      */
-    @ExpectsType(LLVMTypeKind.Function)
     public fun isFunctionVariadic(): Boolean {
         require(isTypeKind(LLVMTypeKind.Function))
 
@@ -257,7 +248,6 @@ public open class LLVMType internal constructor(
     /**
      * Accepts [LLVMTypeKind.Function]
      */
-    @ExpectsType(LLVMTypeKind.Function)
     public fun getFunctionParameterCount(): Int {
         require(isTypeKind(LLVMTypeKind.Function))
 
@@ -269,7 +259,6 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Function]
      */
-    @ExpectsType(LLVMTypeKind.Function)
     public fun getFunctionReturnType(): LLVMType {
         require(isTypeKind(LLVMTypeKind.Function))
 
@@ -283,7 +272,6 @@ public open class LLVMType internal constructor(
      *
      * Accepts [LLVMTypeKind.Function]
      */
-    @ExpectsType(LLVMTypeKind.Function)
     public fun getFunctionParameterTypes(): List<LLVMType> {
         require(isTypeKind(LLVMTypeKind.Function))
 

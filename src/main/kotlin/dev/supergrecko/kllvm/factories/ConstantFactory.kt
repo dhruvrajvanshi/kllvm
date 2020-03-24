@@ -1,7 +1,5 @@
 package dev.supergrecko.kllvm.factories
 
-import dev.supergrecko.kllvm.annotation.ExpectsType
-import dev.supergrecko.kllvm.annotation.RejectsType
 import dev.supergrecko.kllvm.contracts.Factory
 import dev.supergrecko.kllvm.core.LLVMContext
 import dev.supergrecko.kllvm.core.LLVMType
@@ -13,7 +11,6 @@ import org.bytedeco.llvm.global.LLVM
 
 public object ConstantFactory : Factory<LLVMValue> {
     //region Core::Values::Constants
-    @RejectsType(LLVMTypeKind.Function, LLVMTypeKind.Label)
     public fun constNull(type: LLVMType): LLVMValue {
         require(!type.isInTypeKinds(LLVMTypeKind.Function, LLVMTypeKind.Label))
 
@@ -26,7 +23,6 @@ public object ConstantFactory : Factory<LLVMValue> {
         return LLVMValue(value)
     }
 
-    @ExpectsType(LLVMTypeKind.Integer)
     public fun constAllOnes(type: LLVMType): LLVMValue {
         require(type.isTypeKind(LLVMTypeKind.Integer))
 

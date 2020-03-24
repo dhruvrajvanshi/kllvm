@@ -11,7 +11,7 @@ class LLVMStructureTypeTest {
         val struct = TypeFactory.struct(elements, false)
 
         assertEquals(false, struct.isStructPacked())
-        assertEquals(1, struct.getSequentialElementSize())
+        assertEquals(1, struct.getStructElementCount())
         assertEquals(true, struct.isStructLiteral())
         assertEquals(false, struct.isStructOpaque())
 
