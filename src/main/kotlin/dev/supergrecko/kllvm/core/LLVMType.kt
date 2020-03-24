@@ -120,6 +120,8 @@ public open class LLVMType internal constructor(
      * Get the struct name if it has a name
      *
      * Accepts [LLVMTypeKind.Struct]
+     *
+     * TODO: Test this
      */
     public fun getStructName(): String? {
         require(isTypeKind(LLVMTypeKind.Struct))
